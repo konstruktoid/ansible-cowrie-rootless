@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+"""Read a cowrie.json log and return username and password in csv format."""
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+COWRIE_LOG = "{{ docker_user_info.home }}/cowrie/var/log/cowrie.json"
+
+
+def log_reader(logfile):
+    """Read the cowrie json log."""
+    try:
+        with open(logfile, "r", encoding="UTF-8") as cowrie_json:
+            cowrie_data = [json.loads(line) for line in cowrie_json]
+            return cowrie_data
+    except json.decoder.JSONDecodeError:
+        return type(json.decoder.JSONDecodeError)
+
+
+print("timestamp,src_ip,eventid,username,password")
+
+for data in log_reader(COWRIE_LOG):
+    if (
+        data["eventid"] == "cowrie.login.success"
+        or data["eventid"] == "cowrie.login.failed"
+    ):
+        print(
+            data["timestamp"]
+            + ","
+            + data["src_ip"]
+            + ","
+            + data["eventid"]
+            + ","
+            + data["username"]
+            + ","
+            + data["password"]
+        )
