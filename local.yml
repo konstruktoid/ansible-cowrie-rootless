@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  any_errors_fatal: true
+  tasks:
+    - name: configure and install cowrie
+      ansible.builtin.include_tasks: tasks/main.yml
+...
