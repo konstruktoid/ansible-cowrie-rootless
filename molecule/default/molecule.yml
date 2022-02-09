@@ -1,0 +1,31 @@
+---
+dependency:
+  name: galaxy
+  enabled: true
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      callback_whitelist: profile_tasks
+  log: true
+  inventory:
+    host_vars:
+      focal:
+        docker_user: "cowrie"
+platforms:
+  - name: focal
+    box: bento/ubuntu-20.04
+    config_options:
+      vm.boot_timeout: 600
+    instance_raw_config_args:
+      - 'vbguest.installer_options = { allow_kernel_upgrade: true }'
+    memory: 1024
+verifier:
+  name: ansible
+lint: |
+  set -e
+  ansible-lint

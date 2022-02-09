@@ -1,0 +1,66 @@
+---
+- name: Verify
+  hosts: all
+  any_errors_fatal: true
+
+  tasks:
+    - name: install sshpass
+      become: 'yes'
+      ansible.builtin.package:
+        name: sshpass
+        state: present
+
+    - name: register docker_user info
+      become: 'yes'
+      ansible.builtin.user:
+        name: "{{ docker_user }}"
+      check_mode: 'yes'
+      register: docker_user_info
+
+    - name: docker_user verification block
+      block:
+        - name: verify docker_user creation
+          ansible.builtin.command: id "{{ docker_user }}"
+          register: id_docker_user
+          changed_when: id_docker_user.rc != 0
+          failed_when: id_docker_user.rc != 0
+
+        - name: verify docker_user subuid
+          ansible.builtin.command: grep "^{{ docker_user }}:" /etc/subuid
+          register: subuid_docker_user
+          changed_when: subuid_docker_user.rc != 0
+          failed_when: subuid_docker_user.rc != 0
+
+        - name: verify docker_user subgid
+          ansible.builtin.command: grep "^{{ docker_user }}:" /etc/subgid
+          register: subgid_docker_user
+          changed_when: subgid_docker_user.rc != 0
+          failed_when: subgid_docker_user.rc != 0
+
+        - name: verify docker_user dockerd
+          ansible.builtin.shell: >
+            set -o pipefail &&
+            ps -fe | grep -E 'dockerd$|dockerd -s fuse-overlayfs$' | awk '{print $1}'
+          args:
+            executable: /bin/bash
+          register: ps_dockerd
+          changed_when: docker_user[:7] not in ps_dockerd.stdout
+          failed_when: docker_user[:7] not in ps_dockerd.stdout
+
+        - name: verify running cowrie container
+          become: 'yes'
+          become_user: "{{ docker_user }}"
+          community.docker.docker_container_info:
+            name: cowrie
+          register: cowrie_container_running
+          changed_when: not cowrie_container_running
+          failed_when: not cowrie_container_running
+
+        - name: try to connect to container
+          ansible.builtin.command: |
+            sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
+            ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
+          register: ssh_connect
+          changed_when: false
+          failed_when: "'Phil California' not in ssh_connect.stdout"
+...
