@@ -1,0 +1,8 @@
+*.retry
+.cache
+.scannerwork
+.sonar
+.tox
+.vagrant
+.yamllint
+hosts
