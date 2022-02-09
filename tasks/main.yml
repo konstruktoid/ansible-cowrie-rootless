@@ -1,0 +1,55 @@
+---
+- name: configure the docker rootless role
+  ansible.builtin.import_role:
+    name: konstruktoid.docker_rootless
+  vars:
+    docker_user: cowrie
+
+- name: run all notified handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: create "{{ docker_user }}" cowrie directories
+  become: 'yes'
+  become_user: "{{ docker_user }}"
+  ansible.builtin.file:
+    path: "{{ docker_user_info.home }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - cowrie/etc
+    - cowrie/var
+
+- name: create "{{ docker_user }}" cowrie log directory
+  become: 'yes'
+  become_user: "{{ docker_user }}"
+  ansible.builtin.file:
+    path: "{{ docker_user_info.home }}/{{ item }}"
+    state: directory
+    mode: "0777"
+  with_items:
+    - cowrie/var/log
+
+- name: install cowrie configuration files
+  become: 'yes'
+  ansible.builtin.template:
+    src: "cowrie/etc/{{ item }}"
+    dest: "{{ docker_user_info.home }}/cowrie/etc/{{ item }}"
+    backup: 'yes'
+    mode: "0644"
+  register: cowrie_configuration_files
+  with_items:
+    - cowrie.cfg
+    - userdb.txt
+
+- name: add logreader
+  ansible.builtin.template:
+    src: "files/cowrie_logs.py.j2"
+    dest: "{{ ansible_env.HOME }}/cowrie_logs.py"
+    mode: "0700"
+
+- name: configure firewall
+  ansible.builtin.include_tasks: tasks/firewall.yml
+
+- name: configure and run cowrie container
+  ansible.builtin.include_tasks: tasks/cowrie.yml
+...

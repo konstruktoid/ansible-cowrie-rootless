@@ -1,0 +1,28 @@
+---
+- name: register sshd configuration
+  become: true
+  command: sshd -T
+  register: sshd_config
+  changed_when: false
+  failed_when: sshd_config.rc != 0 and not sshd_config.rc == 255
+
+- name: register sshd status
+  systemd:
+    name: sshd
+  check_mode: 'yes'
+  register: sshd
+
+- name: Redirect port 22 to 2222
+  become: true
+  iptables:
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    match: tcp
+    destination_port: 22
+    jump: REDIRECT
+    to_ports: 2222
+    comment: ansible managed
+  when: not (sshd_config.stdout | regex_search('^port 22$', multiline=True)
+        and sshd.status.SubState == "running")
+...

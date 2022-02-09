@@ -1,0 +1,41 @@
+---
+- name: cowrie container block
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ docker_user_info.uid }}"
+    PATH: "{{ docker_user_info.home }}/bin:{{ ansible_env.PATH }}"
+    DOCKER_HOST: "unix:///run/user/{{ docker_user_info.uid }}/docker.sock"
+  block:
+    - name: cowrie container
+      become: 'yes'
+      become_user: "{{ docker_user }}"
+      community.docker.docker_container:
+        name: cowrie
+        image: cowrie/cowrie:latest
+        state: started
+        restart_policy: on-failure
+        restart_retries: 5
+        cap_drop: all
+        capabilities:
+          - chown
+          - dac_override
+          - net_bind_service
+          - setgid
+          - setuid
+        volumes:
+          - "{{ docker_user_info.home }}/cowrie/var/log:/cowrie/cowrie-git/var/log/cowrie"
+          - "{{ docker_user_info.home }}/cowrie/etc:/cowrie/cowrie-git/etc:ro"
+        pull: 'yes'
+        hostname: "{{ ansible_nodename }}"
+        container_default_behavior: compatibility
+        published_ports: 2222:2222
+
+    - name: cowrie container
+      become: 'yes'
+      become_user: "{{ docker_user }}"
+      community.docker.docker_container:
+        name: cowrie
+        image: cowrie/cowrie:latest
+        state: started
+        restart: 'yes'
+      when: cowrie_configuration_files.changed
+...
