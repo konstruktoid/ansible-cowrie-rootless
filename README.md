@@ -12,7 +12,7 @@ There is a [Packer](https://www.packer.io/) configuration file, [terraform/image
 and [Terraform](https://www.terraform.io/) plan, [terraform/main.tf](terraform/main.tf)
 available for deployment to [Amazon Web Services](https://aws.amazon.com/).
 
-It is used to gather additional passwords and usernames to the password lists
+It is used to gather additional passwords and usernames for the password lists
 used by
 [konstruktoid/ansible-role-hardening](https://github.com/konstruktoid/ansible-role-hardening/blob/master/templates/usr/share/dict/passwords.list.j2)
 and [konstruktoid/hardening](https://github.com/konstruktoid/hardening/blob/master/misc/passwords.list).
