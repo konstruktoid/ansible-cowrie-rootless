@@ -23,13 +23,4 @@
         state: started
         scope: user
         daemon_reload: 'yes'
-
-    - name: restart cowrie container if needed
-      become: 'yes'
-      become_user: "{{ docker_user }}"
-      ansible.builtin.systemd:
-        name: cowrie_container
-        enabled: 'yes'
-        state: restarted
-      when: cowrie_configuration_files.changed
 ...
