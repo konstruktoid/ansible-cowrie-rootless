@@ -1,12 +1,14 @@
 #!/usr/bin/python3
-"""Read a cowrie.json log and return username and password in csv format."""
+"""Read the cowrie logs and return connection info in csv format."""
 
 try:
     import json
 except ImportError:
     import simplejson as json
+import glob
 
-COWRIE_LOG = "{{ docker_user_info.home }}/cowrie/var/log/cowrie.json"
+COWRIE_LOG_DIR = "{{ docker_user_info.home }}/cowrie/var/log"
+cowrie_log_files = glob.glob(COWRIE_LOG_DIR + "/cowrie.json*")
 
 
 def log_reader(logfile):
@@ -20,20 +22,20 @@ def log_reader(logfile):
 
 
 print("timestamp,src_ip,eventid,username,password")
-
-for data in log_reader(COWRIE_LOG):
-    if (
-        data["eventid"] == "cowrie.login.success"
-        or data["eventid"] == "cowrie.login.failed"
-    ):
-        print(
-            data["timestamp"]
-            + ","
-            + data["src_ip"]
-            + ","
-            + data["eventid"]
-            + ","
-            + data["username"]
-            + ","
-            + data["password"]
-        )
+for loglist in cowrie_log_files:
+    for data in log_reader(loglist):
+        if (
+            data["eventid"] == "cowrie.login.success"
+            or data["eventid"] == "cowrie.login.failed"
+        ):
+            print(
+                data["timestamp"]
+                + ","
+                + data["src_ip"]
+                + ","
+                + data["eventid"]
+                + ","
+                + data["username"]
+                + ","
+                + data["password"]
+            )
