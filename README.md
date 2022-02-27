@@ -17,6 +17,9 @@ used by
 [konstruktoid/ansible-role-hardening](https://github.com/konstruktoid/ansible-role-hardening/blob/master/templates/usr/share/dict/passwords.list.j2)
 and [konstruktoid/hardening](https://github.com/konstruktoid/hardening/blob/master/misc/passwords.list).
 
+The list with gathered passwords and usernames are available in the [konstruktoid/honeypot-passwords](https://github.com/konstruktoid/honeypot-passwords)
+repository.
+
 ## Usage
 
 ### ansible-pull example
