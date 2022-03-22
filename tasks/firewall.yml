@@ -1,20 +1,20 @@
 ---
 - name: register sshd configuration
   become: true
-  command: sshd -T
+  ansible.builtin.command: sshd -T
   register: sshd_config
   changed_when: false
   failed_when: sshd_config.rc != 0 and not sshd_config.rc == 255
 
 - name: register sshd status
-  systemd:
+  ansible.builtin.systemd:
     name: sshd
   check_mode: 'yes'
   register: sshd
 
 - name: Redirect port 22 to 2222
   become: true
-  iptables:
+  ansible.builtin.iptables:
     table: nat
     chain: PREROUTING
     protocol: tcp
