@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: create checksum file
-        run: find defaults handlers tasks templates -type f -exec sha256sum {} \; > ${{ env.REPOSITORY_NAME }}.sha256
+        run: find Vagrantfile defaults local.yml tasks templates terraform/main.tf terraform/image.pkr.hcl -type f -exec sha256sum {} \; > ${{ env.REPOSITORY_NAME }}.sha256
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
