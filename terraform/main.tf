@@ -54,6 +54,7 @@ resource "aws_security_group" "cowrie" {
   description = "CowrieSSH Terraform security group"
 
   ingress {
+    description = "Allow anyone to connect to the honeypot."
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -61,6 +62,7 @@ resource "aws_security_group" "cowrie" {
   }
 
   egress {
+    description      = "Allow all outgoing traffic."
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
@@ -82,5 +84,8 @@ resource "aws_instance" "cowrie_server" {
     Name    = "cowrie",
     author  = "konstruktoid"
     vcs-url = "https://github.com/konstruktoid/ansible-cowrie-rootless"
+  }
+  metadata_options {
+    http_tokens = "required"
   }
 }
