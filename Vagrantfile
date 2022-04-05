@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "focal" do |focal|
+    focal.vm.network "forwarded_port", guest: 2222, host: 12222
     focal.ssh.extra_args = ["-o","ConnectTimeout=600"]
     focal.ssh.insert_key = true
     focal.vm.boot_timeout = 600
