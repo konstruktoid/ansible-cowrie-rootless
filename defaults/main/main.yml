@@ -1,0 +1,4 @@
+---
+docker_user: cowrie
+rootful_enabled: true
+...

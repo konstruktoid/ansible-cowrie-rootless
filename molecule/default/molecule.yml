@@ -14,10 +14,21 @@ provisioner:
   log: true
   inventory:
     host_vars:
-      focal:
+      rootless:
         docker_user: "cowrie"
+        rootful_enabled: false
+      rootful:
+        docker_user: "cowrie"
+        rootful_enabled: true
 platforms:
-  - name: focal
+  - name: rootless
+    box: bento/ubuntu-20.04
+    config_options:
+      vm.boot_timeout: 600
+    instance_raw_config_args:
+      - 'vbguest.installer_options = { allow_kernel_upgrade: true }'
+    memory: 1024
+  - name: rootful
     box: bento/ubuntu-20.04
     config_options:
       vm.boot_timeout: 600
