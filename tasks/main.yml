@@ -1,9 +1,11 @@
 ---
 - name: configure the docker rootless role
-  ansible.builtin.import_role:
+  ansible.builtin.include_role:
     name: konstruktoid.docker_rootless
   vars:
-    docker_user: cowrie
+    docker_add_alias: false
+    docker_rootful: "{{ rootful_enabled }}"
+    docker_rootful_enabled: "{{ rootful_enabled }}"
 
 - name: run all notified handlers
   ansible.builtin.meta: flush_handlers

@@ -20,6 +20,21 @@ and [konstruktoid/hardening](https://github.com/konstruktoid/hardening/blob/mast
 The list with gathered passwords and usernames are available in the [konstruktoid/honeypot-passwords](https://github.com/konstruktoid/honeypot-passwords)
 repository.
 
+## Variables and defaults
+
+```yaml
+docker_user: cowrie
+rootful_enabled: true
+```
+
+`docker_user` sets the username of the account that will run the container if
+in rootless mode and the `cowrie` configuration and logs will be stored in the
+user home directory, `{{ docker_user_info.home }}/cowrie`.
+
+`rootful_enabled` will start the container as the root user and use
+`--net=host`. This is required in order to gather the source address of the
+attack.
+
 ## Usage
 
 ### ansible-pull example

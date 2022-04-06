@@ -1,11 +1,11 @@
 ---
-- name: cowrie container block
+- name: cowrie rootless container block
   environment:
     XDG_RUNTIME_DIR: "/run/user/{{ docker_user_info.uid }}"
     PATH: "{{ docker_user_info.home }}/bin:{{ ansible_env.PATH }}"
     DOCKER_HOST: "unix:///run/user/{{ docker_user_info.uid }}/docker.sock"
   block:
-    - name: add cowrie container systemd service
+    - name: add cowrie rootless container systemd service
       become: 'yes'
       become_user: "{{ docker_user }}"
       ansible.builtin.template:
@@ -23,4 +23,24 @@
         state: started
         scope: user
         daemon_reload: 'yes'
+  when: not rootful_enabled
+
+- name: cowrie rootful container block
+  block:
+    - name: add cowrie rootful container systemd service
+      become: 'yes'
+      ansible.builtin.template:
+        src: files/cowrie_container.service.j2
+        dest: /etc/systemd/system/cowrie_container.service
+        backup: 'yes'
+        mode: 0600
+
+    - name: enable and cowrie container
+      become: 'yes'
+      ansible.builtin.systemd:
+        name: cowrie_container
+        enabled: 'yes'
+        state: started
+        daemon_reload: 'yes'
+  when: rootful_enabled
 ...

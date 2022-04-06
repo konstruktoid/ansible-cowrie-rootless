@@ -3,6 +3,13 @@ Description=Cowrie rootless Docker container
 Documentation=https://github.com/konstruktoid/ansible-cowrie-rootless
 
 [Service]
+{% if rootful_enabled %}
+ExecStartPre=/usr/bin/docker pull cowrie/cowrie:latest
+ExecStartPre=-/usr/bin/docker stop cowrie
+ExecStartPre=-/usr/bin/docker rm cowrie
+ExecStart=/usr/bin/docker run --cap-drop=all -v{{ docker_user_info.home }}/cowrie/var/log:/cowrie/cowrie-git/var/log/cowrie -v{{ docker_user_info.home }}/cowrie/etc:/cowrie/cowrie-git/etc:ro --net=host --name cowrie cowrie/cowrie:latest
+ExecReload=/usr/bin/docker restart cowrie
+{% else %}
 Environment="DOCKER_HOST=unix:///run/user/{{ docker_user_info.uid }}/docker.sock"
 Environment="PATH={{ docker_user_info.home }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Environment="XDG_RUNTIME_DIR=/run/user/{{ docker_user_info.uid }}"
@@ -11,6 +18,7 @@ ExecStartPre=-{{ docker_user_info.home }}/bin/docker stop cowrie
 ExecStartPre=-{{docker_user_info.home }}/bin/docker rm cowrie
 ExecStart={{ docker_user_info.home }}/bin/docker run --cap-drop=all -v{{ docker_user_info.home }}/cowrie/var/log:/cowrie/cowrie-git/var/log/cowrie -v{{ docker_user_info.home }}/cowrie/etc:/cowrie/cowrie-git/etc:ro -p 2222:2222 --name cowrie cowrie/cowrie:latest
 ExecReload={{ docker_user_info.home }}/bin/docker restart cowrie
+{% endif %}
 TimeoutSec=0
 RestartSec=2
 Restart=always
