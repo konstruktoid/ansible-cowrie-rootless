@@ -13,6 +13,8 @@ sudo apt-get --assume-yes --no-install-recommends install ansible netfilter-pers
 
 ansible-galaxy install konstruktoid.docker_rootless
 
-ansible-playbook -i '127.0.0.1,' -c local /tmp/local.yml
+cd /tmp || exit 1
+
+ansible-playbook -i '127.0.0.1,' -c local ./local.yml
 
 sudo netfilter-persistent save
