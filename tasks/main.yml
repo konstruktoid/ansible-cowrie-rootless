@@ -1,6 +1,6 @@
 ---
 - name: ensure variables are set
-  include_vars:
+  ansible.builtin.include_vars:
     dir: ../defaults
     extensions:
       - "yml"
