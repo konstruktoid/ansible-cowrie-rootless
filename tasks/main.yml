@@ -1,4 +1,10 @@
 ---
+- name: ensure variables are set
+  include_vars:
+    dir: ../defaults
+    extensions:
+      - "yml"
+
 - name: configure the docker rootless role
   ansible.builtin.include_role:
     name: konstruktoid.docker_rootless
