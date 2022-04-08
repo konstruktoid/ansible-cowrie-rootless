@@ -86,6 +86,7 @@ resource "aws_instance" "cowrie_server" {
     vcs-url = "https://github.com/konstruktoid/ansible-cowrie-rootless"
   }
   metadata_options {
-    http_endpoint = "disabled"
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
 }
