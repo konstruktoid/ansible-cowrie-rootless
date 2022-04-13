@@ -10,23 +10,27 @@ terraform {
 }
 
 variable "iam_role" {
-  type    = string
-  default = "AmazonSSMRoleForInstancesQuickSetup"
+  type        = string
+  default     = "AmazonSSMRoleForInstancesQuickSetup"
+  description = "Set AWS IAM role."
 }
 
 variable "ami_owner" {
-  type    = string
-  default = "self"
+  type        = string
+  default     = "self"
+  description = "Set AWS image owner."
 }
 
 variable "region" {
-  type    = string
-  default = "eu-west-3"
+  type        = string
+  default     = "eu-west-3"
+  description = "Set AWS region."
 }
 
 variable "secgroups" {
-  type    = string
-  default = "default"
+  type        = list(string)
+  default     = ["default", "CowrieSSH"]
+  description = "Set AWS security groups."
 }
 
 data "aws_ami" "cowrie" {
@@ -71,22 +75,26 @@ resource "aws_security_group" "cowrie" {
   }
 
   tags = {
-    Name = "CowrieSSH"
+    Name    = "cowrie_ssh_sg"
+    purpose = "honeypot"
   }
 }
 
 resource "aws_instance" "cowrie_server" {
   ami                  = data.aws_ami.cowrie.id
   instance_type        = "t3.nano"
-  security_groups      = ["${var.secgroups}", "CowrieSSH"]
+  security_groups      = var.secgroups
   iam_instance_profile = var.iam_role
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
   tags = {
     Name    = "cowrie",
     author  = "konstruktoid"
     vcs-url = "https://github.com/konstruktoid/ansible-cowrie-rootless"
-  }
-  metadata_options {
-    http_endpoint = "enabled"
-    http_tokens   = "required"
+    purpose = "honeypot"
   }
 }
