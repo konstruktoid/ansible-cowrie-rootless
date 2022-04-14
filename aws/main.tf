@@ -29,7 +29,7 @@ variable "region" {
 
 variable "secgroups" {
   type        = list(string)
-  default     = ["default", "CowrieSSH"]
+  default     = ["CowrieSSH"]
   description = "Set AWS security groups."
 }
 
