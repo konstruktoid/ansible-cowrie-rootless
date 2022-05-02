@@ -23,19 +23,24 @@ def log_reader(logfile):
 
 print("timestamp,src_ip,eventid,username,password")
 for loglist in cowrie_log_files:
-    for data in log_reader(loglist):
-        if (
-            data["eventid"] == "cowrie.login.success"
-            or data["eventid"] == "cowrie.login.failed"
-        ):
-            print(
-                data["timestamp"]
-                + ","
-                + data["src_ip"]
-                + ","
-                + data["eventid"]
-                + ","
-                + data["username"]
-                + ","
-                + data["password"]
-            )
+    try:
+        for data in log_reader(loglist):
+            if (
+                data["eventid"] == "cowrie.login.success"
+                or data["eventid"] == "cowrie.login.failed"
+            ):
+                print(
+                    data["timestamp"]
+                    + ","
+                    + data["src_ip"]
+                    + ","
+                    + data["eventid"]
+                    + ","
+                    + data["username"]
+                    + ","
+                    + data["password"]
+                )
+    except BrokenPipeError:
+        pass
+    except TypeError:
+        pass
