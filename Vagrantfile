@@ -1,3 +1,8 @@
+$script = <<-'SCRIPT'
+apt-get update && apt-get -y install python3-pip && pip3 install ansible
+curl -sSL get.docker.com | sh && sudo addgroup vagrant docker
+SCRIPT
+
 Vagrant.configure("2") do |config|
   config.vbguest.installer_options = { allow_kernel_upgrade: true }
   config.vm.provider "virtualbox" do |v|
@@ -14,7 +19,6 @@ Vagrant.configure("2") do |config|
     focal.vm.boot_timeout = 600
     focal.vm.box = "ubuntu/focal64"
     focal.vm.hostname = "focal"
-    focal.vm.provision "shell",
-      inline: "apt-get update && apt-get -y install python3-pip && pip3 install ansible"
+    focal.vm.provision "shell", inline: $script
   end
 end
