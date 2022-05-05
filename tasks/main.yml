@@ -1,10 +1,4 @@
 ---
-- name: ensure variables are set
-  ansible.builtin.include_vars:
-    dir: ../defaults
-    extensions:
-      - "yml"
-
 - name: configure the docker rootless role
   ansible.builtin.include_role:
     name: konstruktoid.docker_rootless
@@ -49,11 +43,24 @@
     - cowrie.cfg
     - userdb.txt
 
-- name: add logreader
+- name: add python logreader
   ansible.builtin.template:
     src: "files/cowrie_logs.py.j2"
     dest: "{{ ansible_env.HOME }}/cowrie_logs.py"
     mode: "0700"
+
+- name: add shell logreader
+  ansible.builtin.template:
+    src: "files/cowrie_userpass.sh.j2"
+    dest: "{{ ansible_env.HOME }}/cowrie_userpass.sh"
+    mode: "0700"
+
+- name: install jq
+  become: 'yes'
+  ansible.builtin.apt:
+    name: "jq"
+    state: present
+    install_recommends: 'no'
 
 - name: configure firewall
   ansible.builtin.include_tasks: tasks/firewall.yml

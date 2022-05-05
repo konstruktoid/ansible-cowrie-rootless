@@ -1,0 +1,6 @@
+#!/bin/bash
+# Read the cowrie logs and return captured usernames and passwords.
+
+set -eu -o pipefail
+
+jq -r '. | "\(.username)\n\(.password)" | select (.!="null\nnull")' {{ docker_user_info.home }}/cowrie/var/log/cowrie.json*
