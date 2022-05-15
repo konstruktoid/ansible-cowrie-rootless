@@ -18,10 +18,11 @@ source "amazon-ebs" "cowrie" {
     most_recent = true
     owners      = ["099720109477"]
   }
-  ssh_username            = "ubuntu"
-  ssh_timeout             = "10m"
-  ssh_keep_alive_interval = "15s"
-  ssh_pty                 = "true"
+  ssh_clear_authorized_keys = "true"
+  ssh_keep_alive_interval   = "15s"
+  ssh_pty                   = "true"
+  ssh_timeout               = "10m"
+  ssh_username              = "ubuntu"
 }
 
 build {
