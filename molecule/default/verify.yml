@@ -5,13 +5,13 @@
 
   tasks:
     - name: install sshpass
-      become: 'yes'
+      become: true
       ansible.builtin.package:
         name: sshpass
         state: present
 
     - name: register docker_user info
-      become: 'yes'
+      become: true
       ansible.builtin.user:
         name: "{{ docker_user }}"
       check_mode: 'yes'
@@ -48,7 +48,7 @@
           failed_when: docker_user[:7] not in ps_dockerd.stdout
 
         - name: verify running cowrie container
-          become: 'yes'
+          become: true
           become_user: "{{ docker_user }}"
           community.docker.docker_container_info:
             name: cowrie
@@ -96,7 +96,7 @@
           failed_when: ps_dockerd.rc != 0
 
         - name: verify running cowrie container
-          become: 'yes'
+          become: true
           community.docker.docker_container_info:
             name: cowrie
           register: cowrie_container_running

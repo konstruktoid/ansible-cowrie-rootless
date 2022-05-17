@@ -11,7 +11,7 @@
   ansible.builtin.meta: flush_handlers
 
 - name: create "{{ docker_user }}" cowrie directories
-  become: 'yes'
+  become: true
   become_user: "{{ docker_user }}"
   ansible.builtin.file:
     path: "{{ docker_user_info.home }}/{{ item }}"
@@ -22,7 +22,7 @@
     - cowrie/var
 
 - name: create "{{ docker_user }}" cowrie log directory
-  become: 'yes'
+  become: true
   become_user: "{{ docker_user }}"
   ansible.builtin.file:
     path: "{{ docker_user_info.home }}/{{ item }}"
@@ -32,7 +32,7 @@
     - cowrie/var/log
 
 - name: install cowrie configuration files
-  become: 'yes'
+  become: true
   ansible.builtin.template:
     src: "cowrie/etc/{{ item }}"
     dest: "{{ docker_user_info.home }}/cowrie/etc/{{ item }}"
@@ -56,7 +56,7 @@
     mode: "0700"
 
 - name: install jq
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
     name: "jq"
     state: present
