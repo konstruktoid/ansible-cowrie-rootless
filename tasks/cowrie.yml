@@ -6,7 +6,7 @@
     DOCKER_HOST: "unix:///run/user/{{ docker_user_info.uid }}/docker.sock"
   block:
     - name: add cowrie rootless container systemd service
-      become: 'yes'
+      become: true
       become_user: "{{ docker_user }}"
       ansible.builtin.template:
         src: files/cowrie_container.service.j2
@@ -15,7 +15,7 @@
         mode: 0600
 
     - name: enable and cowrie container
-      become: 'yes'
+      become: true
       become_user: "{{ docker_user }}"
       ansible.builtin.systemd:
         name: cowrie_container
@@ -28,7 +28,7 @@
 - name: cowrie rootful container block
   block:
     - name: add cowrie rootful container systemd service
-      become: 'yes'
+      become: true
       ansible.builtin.template:
         src: files/cowrie_container.service.j2
         dest: /etc/systemd/system/cowrie_container.service
@@ -36,7 +36,7 @@
         mode: 0600
 
     - name: enable and cowrie container
-      become: 'yes'
+      become: true
       ansible.builtin.systemd:
         name: cowrie_container
         enabled: 'yes'
