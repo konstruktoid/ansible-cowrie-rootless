@@ -1,12 +1,12 @@
 ---
-- name: register sshd configuration
+- name: Register sshd configuration
   become: true
   ansible.builtin.command: sshd -T
   register: sshd_config
   changed_when: false
   failed_when: sshd_config.rc != 0 and not sshd_config.rc == 255
 
-- name: register sshd status
+- name: Register sshd status
   ansible.builtin.systemd:
     name: sshd
   check_mode: 'yes'

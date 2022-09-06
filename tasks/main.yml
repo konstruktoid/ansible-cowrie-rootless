@@ -1,5 +1,5 @@
 ---
-- name: configure the docker rootless role
+- name: Configure the docker rootless role
   ansible.builtin.include_role:
     name: konstruktoid.docker_rootless
   vars:
@@ -7,10 +7,10 @@
     docker_rootful: "{{ rootful_enabled }}"
     docker_rootful_enabled: "{{ rootful_enabled }}"
 
-- name: run all notified handlers
+- name: Run all notified handlers
   ansible.builtin.meta: flush_handlers
 
-- name: create "{{ docker_user }}" cowrie directories
+- name: Create "{{ docker_user }}" cowrie directories
   become: true
   become_user: "{{ docker_user }}"
   ansible.builtin.file:
@@ -21,7 +21,7 @@
     - cowrie/etc
     - cowrie/var
 
-- name: create "{{ docker_user }}" cowrie log directory
+- name: Create "{{ docker_user }}" cowrie log directory
   become: true
   become_user: "{{ docker_user }}"
   ansible.builtin.file:
@@ -31,7 +31,7 @@
   with_items:
     - cowrie/var/log
 
-- name: install cowrie configuration files
+- name: Install cowrie configuration files
   become: true
   ansible.builtin.template:
     src: "cowrie/etc/{{ item }}"
@@ -43,28 +43,28 @@
     - cowrie.cfg
     - userdb.txt
 
-- name: add python logreader
+- name: Add python logreader
   ansible.builtin.template:
     src: "files/cowrie_logs.py.j2"
     dest: "{{ ansible_env.HOME }}/cowrie_logs.py"
     mode: "0700"
 
-- name: add shell logreader
+- name: Add shell logreader
   ansible.builtin.template:
     src: "files/cowrie_userpass.sh.j2"
     dest: "{{ ansible_env.HOME }}/cowrie_userpass.sh"
     mode: "0700"
 
-- name: install jq
+- name: Install jq
   become: true
   ansible.builtin.apt:
     name: "jq"
     state: present
     install_recommends: 'no'
 
-- name: configure firewall
+- name: Configure firewall
   ansible.builtin.include_tasks: tasks/firewall.yml
 
-- name: configure and run cowrie container
+- name: Configure and run cowrie container
   ansible.builtin.include_tasks: tasks/cowrie.yml
 ...
