@@ -4,40 +4,40 @@
   any_errors_fatal: true
 
   tasks:
-    - name: install sshpass
+    - name: Install sshpass
       become: true
       ansible.builtin.package:
         name: sshpass
         state: present
 
-    - name: register docker_user info
+    - name: Register docker_user info
       become: true
       ansible.builtin.user:
         name: "{{ docker_user }}"
       check_mode: 'yes'
       register: docker_user_info
 
-    - name: rootless verification block
+    - name: Rootless verification block
       block:
-        - name: verify docker_user creation
+        - name: Verify docker_user creation
           ansible.builtin.command: id "{{ docker_user }}"
           register: id_docker_user
           changed_when: id_docker_user.rc != 0
           failed_when: id_docker_user.rc != 0
 
-        - name: verify docker_user subuid
+        - name: Verify docker_user subuid
           ansible.builtin.command: grep "^{{ docker_user }}:" /etc/subuid
           register: subuid_docker_user
           changed_when: subuid_docker_user.rc != 0
           failed_when: subuid_docker_user.rc != 0
 
-        - name: verify docker_user subgid
+        - name: Verify docker_user subgid
           ansible.builtin.command: grep "^{{ docker_user }}:" /etc/subgid
           register: subgid_docker_user
           changed_when: subgid_docker_user.rc != 0
           failed_when: subgid_docker_user.rc != 0
 
-        - name: verify docker_user dockerd
+        - name: Verify docker_user dockerd
           ansible.builtin.shell: >
             set -o pipefail &&
             ps -fe | grep -E 'dockerd$|dockerd -s fuse-overlayfs$' | awk '{print $1}'
@@ -47,7 +47,7 @@
           changed_when: docker_user[:7] not in ps_dockerd.stdout
           failed_when: docker_user[:7] not in ps_dockerd.stdout
 
-        - name: verify running cowrie container
+        - name: Verify running cowrie container
           become: true
           become_user: "{{ docker_user }}"
           community.docker.docker_container_info:
@@ -56,7 +56,7 @@
           changed_when: not cowrie_container_running
           failed_when: not cowrie_container_running
 
-        - name: try to connect to container
+        - name: Try to connect to container
           ansible.builtin.command: |
             sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
             ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
@@ -65,27 +65,27 @@
           failed_when: "'Phil California' not in ssh_connect.stdout"
       when: not rootful_enabled
 
-    - name: rootful verification block
+    - name: Rootful verification block
       block:
-        - name: verify docker_user creation
+        - name: Verify docker_user creation
           ansible.builtin.command: id "{{ docker_user }}"
           register: id_docker_user
           changed_when: id_docker_user.rc != 0
           failed_when: id_docker_user.rc != 0
 
-        - name: verify docker_user subuid
+        - name: Verify docker_user subuid
           ansible.builtin.command: grep "^{{ docker_user }}:" /etc/subuid
           register: subuid_docker_user
           changed_when: subuid_docker_user.rc != 0
           failed_when: subuid_docker_user.rc != 0
 
-        - name: verify docker_user subgid
+        - name: Verify docker_user subgid
           ansible.builtin.command: grep "^{{ docker_user }}:" /etc/subgid
           register: subgid_docker_user
           changed_when: subgid_docker_user.rc != 0
           failed_when: subgid_docker_user.rc != 0
 
-        - name: verify docker_user dockerd
+        - name: Verify docker_user dockerd
           ansible.builtin.shell: >
             set -o pipefail &&
             ps -fe | grep -E '^root.*dockerd|^root.*containerd$'
@@ -95,7 +95,7 @@
           changed_when: ps_dockerd.rc != 0
           failed_when: ps_dockerd.rc != 0
 
-        - name: verify running cowrie container
+        - name: Verify running cowrie container
           become: true
           community.docker.docker_container_info:
             name: cowrie
@@ -103,7 +103,7 @@
           changed_when: not cowrie_container_running
           failed_when: not cowrie_container_running
 
-        - name: try to connect to container
+        - name: Try to connect to container
           ansible.builtin.command: |
             sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
             ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
