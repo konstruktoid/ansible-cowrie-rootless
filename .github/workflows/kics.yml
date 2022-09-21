@@ -10,7 +10,7 @@ jobs:
       - name: Create results-dir
         run: mkdir -p results-dir
       - name: Run KICS Scan with SARIF result
-        uses: checkmarx/kics-github-action@latest
+        uses: checkmarx/kics-github-action@v1.3
         with:
           path: 'aws'
           output_path: results-dir
