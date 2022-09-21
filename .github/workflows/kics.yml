@@ -1,6 +1,5 @@
 name: Scan with KICS
-on:
-  on: [push, pull_request]
+on: [push, pull_request]
 jobs:
   kics-job:
     runs-on: ubuntu-latest
