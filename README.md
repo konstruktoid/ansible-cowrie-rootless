@@ -6,7 +6,7 @@
 
 This is a repository containing a [Ansible](https://www.ansible.com/) role
 to deploy a [Cowrie](https://github.com/cowrie/cowrie) honeypot container
-using [Docker in rootless mode](https://github.com/konstruktoid/ansible-docker-rootless).
+using [Docker in rootless mode](https://github.com/konstruktoid/ansible-role-docker-rootless).
 
 There is a [Packer](https://www.packer.io/) configuration file, [aws/ubuntu.pkr.hcl](aws/ubuntu.pkr.hcl),
 and [Terraform](https://www.terraform.io/) plan, [aws/main.tf](aws/main.tf)
