@@ -18,6 +18,7 @@
       register: docker_user_info
 
     - name: Rootless verification block
+      when: not rootful_enabled
       block:
         - name: Verify docker_user creation
           ansible.builtin.command: id "{{ docker_user }}"
@@ -63,9 +64,9 @@
           register: ssh_connect
           changed_when: false
           failed_when: "'Phil California' not in ssh_connect.stdout"
-      when: not rootful_enabled
 
     - name: Rootful verification block
+      when: rootful_enabled
       block:
         - name: Verify docker_user creation
           ansible.builtin.command: id "{{ docker_user }}"
@@ -110,5 +111,4 @@
           register: ssh_connect
           changed_when: false
           failed_when: "'Phil California' not in ssh_connect.stdout"
-      when: rootful_enabled
 ...
