@@ -58,9 +58,10 @@
           failed_when: not cowrie_container_running
 
         - name: Try to connect to container
-          ansible.builtin.command: |
-            sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
-            ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
+          ansible.builtin.command:
+            cmd: |
+              sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
+              ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
           register: ssh_connect
           changed_when: false
           failed_when: "'Phil California' not in ssh_connect.stdout"
@@ -105,9 +106,10 @@
           failed_when: not cowrie_container_running
 
         - name: Try to connect to container
-          ansible.builtin.command: |
-            sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
-            ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
+          ansible.builtin.command:
+            cmd: |
+              sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
+              ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
           register: ssh_connect
           changed_when: false
           failed_when: "'Phil California' not in ssh_connect.stdout"
