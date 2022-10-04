@@ -10,7 +10,7 @@
 - name: Run all notified handlers
   ansible.builtin.meta: flush_handlers
 
-- name: Create "{{ docker_user }}" cowrie directories
+- name: Create cowrie directories in {{ docker_user_info.home }}
   become: true
   become_user: "{{ docker_user }}"
   ansible.builtin.file:
@@ -21,7 +21,7 @@
     - cowrie/etc
     - cowrie/var
 
-- name: Create "{{ docker_user }}" cowrie log directory
+- name: Create cowrie log directory in {{ docker_user_info.home }}
   become: true
   become_user: "{{ docker_user }}"
   ansible.builtin.file:
