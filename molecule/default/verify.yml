@@ -4,6 +4,27 @@
   any_errors_fatal: true
 
   tasks:
+    - name: Reboot host
+      become: true
+      ansible.builtin.reboot:
+
+    - name: Wait for the host and reconnect
+      ansible.builtin.wait_for:
+        port: 22
+        host: '{{ (ansible_ssh_host | default(ansible_host)) | default(inventory_hostname) }}'
+        delay: 10
+        timeout: 120
+
+    - name: Include default vars
+      ansible.builtin.include_vars:
+        dir: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/"
+        extensions:
+          - 'yml'
+
+    - name: Include host vars
+      ansible.builtin.include_vars:
+        file: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/inventory/host_vars/{{ ansible_hostname }}"
+
     - name: Install sshpass
       become: true
       ansible.builtin.package:
@@ -61,7 +82,7 @@
           ansible.builtin.command:
             cmd: |
               sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
-              ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
+              ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep "^phil.*Phil California" /etc/passwd'
           register: ssh_connect
           changed_when: false
           failed_when: "'Phil California' not in ssh_connect.stdout"
@@ -109,8 +130,18 @@
           ansible.builtin.command:
             cmd: |
               sshpass -p {{ ansible_nodename | shuffle(seed='k10d') | join('') }}
-              ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep ^phil /etc/passwd'
+              ssh -p2222 -o StrictHostKeyChecking=no -o ConnectTimeout=5 127.0.0.1 'grep "^phil.*Phil California" /etc/passwd'
           register: ssh_connect
           changed_when: false
           failed_when: "'Phil California' not in ssh_connect.stdout"
+
+    - name: Verify logging
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        grep 'cowrie.command.input.*CMD: grep.*^phil.*Phil California.../etc/passwd' "{{ docker_user_info.home }}/cowrie/var/log/cowrie.json"
+      args:
+        executable: /bin/bash
+      register: grep_logs
+      changed_when: grep_logs.rc != 0
+      failed_when: grep_logs.rc != 0
 ...
