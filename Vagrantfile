@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
     focal.ssh.extra_args = ["-o","ConnectTimeout=600"]
     focal.ssh.insert_key = true
     focal.vm.boot_timeout = 600
-    focal.vm.box = "ubuntu/focal64"
+    focal.vm.box = "ubuntu/jammy64"
     focal.vm.hostname = "focal"
     focal.vm.provision "shell", inline: $script
   end
