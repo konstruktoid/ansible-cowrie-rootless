@@ -20,7 +20,7 @@ jobs:
         shell: bash
 
       - name: Checkout repository
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # master
+        uses: actions/checkout@27135e314dd1818f797af1db9dae03a9f045786b # master
 
       - name: Build artifacts
         run: |
@@ -64,7 +64,7 @@ jobs:
         shell: bash
 
       - name: Download ${{ env.REPOSITORY_NAME }}.sha256
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        uses: actions/download-artifact@cbed621e49e4c01b044d60f6c80ea4ed6328b281 # v2.1.1
         with:
           name: ${{ env.REPOSITORY_NAME }}.sha256
 

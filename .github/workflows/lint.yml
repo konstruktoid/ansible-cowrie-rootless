@@ -4,6 +4,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
       - name: Lint Ansible Playbook
-        uses: ansible/ansible-lint-action@main
+        uses: ansible/ansible-lint-action@6cf7cb8d0343b8f0e123638bdeafe8e020dc5b80 # main

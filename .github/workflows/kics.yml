@@ -10,11 +10,11 @@ jobs:
     name: kics-action
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
       - name: Create results-dir
         run: mkdir -p results-dir
       - name: Run KICS Scan with SARIF result
-        uses: checkmarx/kics-github-action@v1.6
+        uses: checkmarx/kics-github-action@c2ef4b7d4ab405c50aab0e1c27f5f4630895c3b7 # v1.6
         with:
           path: 'aws'
           output_path: results-dir
@@ -25,6 +25,6 @@ jobs:
           cat results-dir/results.sarif
           cat results-dir/results.json
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@168b99b3c22180941ae7dbdd5f5c9678ede476ba # v2.2.7
         with:
           sarif_file: results-dir/results.sarif
