@@ -39,6 +39,6 @@ build {
   }
 
   provisioner "shell" {
-    script = "./scripts/configure.sh"
+    script = "../scripts/configure.sh"
   }
 }
