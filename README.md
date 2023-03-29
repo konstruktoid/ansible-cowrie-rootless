@@ -1,4 +1,4 @@
-# Cowrie honeypot on AWS using Terraform, Ansible and Docker
+# Cowrie honeypot deployment using Packer, Terraform, Ansible and Docker
 
 ![Cowrie log](./images/cowrie_aws.png "Cowrie log")
 
@@ -7,10 +7,6 @@
 This is a repository containing a [Ansible](https://www.ansible.com/) role
 to deploy a [Cowrie](https://github.com/cowrie/cowrie) honeypot container
 using [Docker in rootless mode](https://github.com/konstruktoid/ansible-role-docker-rootless).
-
-There is a [Packer](https://www.packer.io/) configuration file, [aws/ubuntu.pkr.hcl](aws/ubuntu.pkr.hcl),
-and [Terraform](https://www.terraform.io/) plan, [aws/main.tf](aws/main.tf)
-available for deployment to [Amazon Web Services](https://aws.amazon.com/).
 
 It is used to gather additional passwords and usernames for the password lists
 used by
@@ -46,6 +42,10 @@ $ ansible-pull -i '127.0.0.1,' -c local --url https://github.com/konstruktoid/an
 
 ### AWS deployment
 
+There is a [Packer](https://www.packer.io/) configuration file, [aws/ubuntu.pkr.hcl](aws/ubuntu.pkr.hcl),
+and [Terraform](https://www.terraform.io/) plan, [aws/main.tf](aws/main.tf)
+available for deployment to [Amazon Web Services](https://aws.amazon.com/).
+
 ```sh
 $ cd aws
 $ packer build ubuntu.pkr.hcl
@@ -57,6 +57,10 @@ Note that the `sshd` service is disabled and you will need to manage the
 instance using the AWS Session manager.
 
 ### DigitalOcean deployment
+
+There is a [Packer](https://www.packer.io/) configuration file, [digitalocean/ubuntu.pkr.hcl](digitalocean/ubuntu.pkr.hcl),
+and [Terraform](https://www.terraform.io/) plan, [digitalocean/main.tf](digitalocean/main.tf)
+available for deployment to [DigitalOcean](https://www.digitalocean.com/).
 
 ```sh
 $ cd digitalocean
