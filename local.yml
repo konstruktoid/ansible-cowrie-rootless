@@ -2,12 +2,12 @@
 - hosts: localhost
   any_errors_fatal: true
   tasks:
-    - name: ensure variables are set
+    - name: Ensure variables are set
       ansible.builtin.include_vars:
         dir: ./defaults
         extensions:
           - "yml"
 
-    - name: configure and install cowrie
+    - name: Configure and install cowrie
       ansible.builtin.include_tasks: tasks/main.yml
 ...
