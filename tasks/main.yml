@@ -1,4 +1,8 @@
 ---
+- name: Include the baseline role
+  ansible.builtin.include_role:
+    name: konstruktoid.baseline
+
 - name: Configure the docker rootless role
   ansible.builtin.include_role:
     name: konstruktoid.docker_rootless
