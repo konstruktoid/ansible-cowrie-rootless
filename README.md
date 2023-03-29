@@ -49,8 +49,22 @@ $ ansible-pull -i '127.0.0.1,' -c local --url https://github.com/konstruktoid/an
 ```sh
 $ cd aws
 $ packer build ubuntu.pkr.hcl
+$ terraform plan
 $ terraform apply
 ```
 
 Note that the `sshd` service is disabled and you will need to manage the
 instance using the AWS Session manager.
+
+### DigitalOcean deployment
+
+```sh
+$ cd digitalocean
+$ DIGITALOCEAN_TOKEN=$DO_TOKEN packer build ubuntu.pkr.hcl
+$ terraform plan -var "do_token=$DO_TOKEN"
+$ terraform apply -var "do_token=$DO_TOKEN"
+```
+
+Note that the `sshd` service is disabled and you will need to manage the
+instance using the Recovery Console and login using the username set by the
+`system_user` packer variable, `kondig` by default.
