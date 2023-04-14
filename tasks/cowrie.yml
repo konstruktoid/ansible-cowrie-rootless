@@ -13,7 +13,7 @@
         src: files/cowrie_container.service.j2
         dest: "{{ docker_user_info.home }}/.config/systemd/user/cowrie_container.service"
         backup: 'yes'
-        mode: 0600
+        mode: "0600"
 
     - name: Enable and start the cowrie container
       become: true
@@ -34,7 +34,7 @@
         src: files/cowrie_container.service.j2
         dest: /etc/systemd/system/cowrie_container.service
         backup: 'yes'
-        mode: 0600
+        mode: "0600"
 
     - name: Enable and start the cowrie container
       become: true
