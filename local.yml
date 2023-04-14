@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: Local cowrie installation
+  hosts: localhost
   any_errors_fatal: true
   tasks:
     - name: Ensure variables are set
