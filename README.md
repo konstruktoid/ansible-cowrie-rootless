@@ -48,7 +48,11 @@ available for deployment to [Amazon Web Services](https://aws.amazon.com/).
 
 ```sh
 $ cd aws
+$ terraform init -upgrade
+$ packer init -upgrade ubuntu.pkr.hcl
+$ packer validate ubuntu.pkr.hcl
 $ packer build ubuntu.pkr.hcl
+$ terraform validate
 $ terraform plan
 $ terraform apply
 ```
@@ -64,7 +68,11 @@ available for deployment to [DigitalOcean](https://www.digitalocean.com/).
 
 ```sh
 $ cd digitalocean
+$ terraform init -upgrade
+$ packer init -upgrade ubuntu.pkr.hcl
+$ DIGITALOCEAN_TOKEN=$DO_TOKEN packer validate ubuntu.pkr.hcl
 $ DIGITALOCEAN_TOKEN=$DO_TOKEN packer build ubuntu.pkr.hcl
+$ terraform validate
 $ terraform plan -var "do_token=$DO_TOKEN"
 $ terraform apply -var "do_token=$DO_TOKEN"
 ```

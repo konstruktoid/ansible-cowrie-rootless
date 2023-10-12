@@ -1,12 +1,3 @@
-packer {
-  required_plugins {
-    digitalocean = {
-      version = ">= 1.0.4"
-      source  = "github.com/digitalocean/digitalocean"
-    }
-  }
-}
-
 variable "do_token" {
   type        = string
   default     = ""
@@ -25,7 +16,18 @@ variable "system_user" {
   description = "Console login username."
 }
 
-locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+}
+
+packer {
+  required_plugins {
+    digitalocean = {
+      version = ">= 1.0.4"
+      source  = "github.com/digitalocean/digitalocean"
+    }
+  }
+}
 
 source "digitalocean" "cowrie" {
   droplet_name              = "cowrie-packer-${local.timestamp}"

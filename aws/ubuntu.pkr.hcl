@@ -3,7 +3,18 @@ variable "region" {
   default = "eu-west-3"
 }
 
-locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+}
+
+packer {
+  required_plugins {
+    amazon = {
+      version = ">= 1.2.6"
+      source  = "github.com/hashicorp/amazon"
+    }
+  }
+}
 
 source "amazon-ebs" "cowrie" {
   ami_name      = "cowrie-packer-${local.timestamp}"
