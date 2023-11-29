@@ -24,10 +24,9 @@ sudo apt-get --assume-yes update
 
 sudo apt-get --assume-yes --no-install-recommends install ansible netfilter-persistent iptables-persistent
 
-ansible-galaxy install konstruktoid.baseline
-ansible-galaxy install konstruktoid.docker_rootless
-
 cd /tmp || exit 1
+
+ansible-galaxy install --ignore-errors -r requirements.yml
 
 ansible-playbook -i '127.0.0.1,' -c local ./local.yml
 

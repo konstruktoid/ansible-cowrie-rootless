@@ -49,8 +49,7 @@ data "aws_ami" "cowrie" {
 }
 
 provider "aws" {
-  profile = "default"
-  region  = var.region
+  region = var.region
 }
 
 resource "aws_security_group" "cowrie" {
