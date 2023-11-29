@@ -3,4 +3,14 @@ collections:
   - ansible.posix
   - community.docker
   - community.general
-...
+
+roles:
+  - name: konstruktoid.baseline
+    src: https://github.com/konstruktoid/ansible-role-baseline.git
+    scm: git
+    version: v0.1.6
+
+  - name: konstruktoid.docker_rootless
+    src: https://github.com/konstruktoid/ansible-role-docker-rootless.git
+    scm: git
+    version: v0.31.0

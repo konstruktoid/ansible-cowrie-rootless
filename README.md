@@ -36,7 +36,7 @@ attack.
 ### ansible-pull example
 
 ```sh
-$ ansible-galaxy install konstruktoid.docker_rootless
+$ ansible-galaxy install --ignore-errors -r requirements.yml
 $ ansible-pull -i '127.0.0.1,' -c local --url https://github.com/konstruktoid/ansible-cowrie-rootless.git local.yml
 ```
 
@@ -70,8 +70,9 @@ available for deployment to [DigitalOcean](https://www.digitalocean.com/).
 $ cd digitalocean
 $ terraform init -upgrade
 $ packer init -upgrade ubuntu.pkr.hcl
-$ DIGITALOCEAN_TOKEN=$DO_TOKEN packer validate ubuntu.pkr.hcl
-$ DIGITALOCEAN_TOKEN=$DO_TOKEN packer build ubuntu.pkr.hcl
+$ export DIGITALOCEAN_TOKEN=$DO_TOKEN
+$ packer validate ubuntu.pkr.hcl
+$ packer build ubuntu.pkr.hcl
 $ terraform validate
 $ terraform plan -var "do_token=$DO_TOKEN"
 $ terraform apply -var "do_token=$DO_TOKEN"

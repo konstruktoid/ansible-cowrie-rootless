@@ -50,6 +50,7 @@ build {
     sources = [
       "../defaults",
       "../local.yml",
+      "../requirements.yml",
       "../tasks",
       "../templates"
     ]
