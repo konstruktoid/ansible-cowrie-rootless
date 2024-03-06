@@ -7,8 +7,8 @@
       ansible.builtin.include_vars:
         dir: ./defaults
         extensions:
-          - "yml"
+          - yml
 
     - name: Configure and install cowrie
-      ansible.builtin.include_tasks: tasks/main.yml
-...
+      ansible.builtin.import_tasks:
+        file: tasks/main.yml

@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include ansible-cowrie-rootless"
+    - name: Include ansible-cowrie-rootless
       ansible.builtin.include_role:
-        name: "ansible-cowrie-rootless"
+        name: ansible-cowrie-rootless
