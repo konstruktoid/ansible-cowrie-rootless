@@ -26,7 +26,7 @@ sudo apt-get --assume-yes --no-install-recommends install ansible netfilter-pers
 
 cd /tmp || exit 1
 
-ansible-galaxy install --ignore-errors -r requirements.yml
+ansible-galaxy install -r requirements.yml
 
 ansible-playbook -i '127.0.0.1,' -c local ./local.yml
 

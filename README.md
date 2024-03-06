@@ -31,12 +31,12 @@ user home directory, `{{ docker_user_info.home }}/cowrie`.
 `--net=host`. This is required in order to gather the source address of the
 attack.
 
-## Usage
+## Setup
 
 ### ansible-pull example
 
 ```sh
-$ ansible-galaxy install --ignore-errors -r requirements.yml
+$ ansible-galaxy install -r requirements.yml
 $ ansible-pull -i '127.0.0.1,' -c local --url https://github.com/konstruktoid/ansible-cowrie-rootless.git local.yml
 ```
 
@@ -48,17 +48,47 @@ available for deployment to [Amazon Web Services](https://aws.amazon.com/).
 
 ```sh
 $ cd aws
-$ terraform init -upgrade
 $ packer init -upgrade ubuntu.pkr.hcl
 $ packer validate ubuntu.pkr.hcl
 $ packer build ubuntu.pkr.hcl
+$ terraform init -upgrade
 $ terraform validate
 $ terraform plan
 $ terraform apply
 ```
 
-Note that the `sshd` service is disabled and you will need to manage the
-instance using the AWS Session manager.
+Note that the `sshd` service is disabled and replaced with the honeypot.
+
+You will need to manage the instance using the AWS Session manager.
+
+### Azure deployment
+
+There is a [Packer](https://www.packer.io/) configuration file, [azure/ubuntu.pkr.hcl](azure/ubuntu.pkr.hcl),
+and [Terraform](https://www.terraform.io/) plan, [azure/main.tf](aws/main.tf)
+available for deployment to [Microsoft Azure](https://portal.azure.com/).
+
+The `azure_vars_export` file is available in the [konstruktoid/hardened-images](https://github.com/konstruktoid/hardened-images/blob/master/azure_vars_export)
+repository.
+
+```sh
+$ export ARM_PRINCIPAL_NAME=Honeypots
+$ export ARM_RESOURCE_GROUP_NAME=Honeypots
+$ export ARM_LOCATION=northeurope
+$ source azure_vars_export
+$ packer init -upgrade ubuntu.pkr.hcl
+$ packer validate ubuntu.pkr.hcl
+$ packer build ubuntu.pkr.hcl
+$ terraform init -upgrade
+$ terraform validate
+$ terraform import "azurerm_resource_group.honeypots" \
+  "$(az group show --name "${ARM_RESOURCE_GROUP_NAME}" | jq -r '.id')"
+$ terraform plan
+$ terraform apply
+$ grep -E '"admin_(username|password)":' terraform.tfstate
+
+Note that the `sshd` service is disabled and replaced with the honeypot.
+
+You will need to manage the instance using the serial console.
 
 ### DigitalOcean deployment
 
@@ -68,16 +98,18 @@ available for deployment to [DigitalOcean](https://www.digitalocean.com/).
 
 ```sh
 $ cd digitalocean
-$ terraform init -upgrade
 $ packer init -upgrade ubuntu.pkr.hcl
 $ export DIGITALOCEAN_TOKEN=$DO_TOKEN
 $ packer validate ubuntu.pkr.hcl
 $ packer build ubuntu.pkr.hcl
+$ terraform init -upgrade
 $ terraform validate
 $ terraform plan -var "do_token=$DO_TOKEN"
 $ terraform apply -var "do_token=$DO_TOKEN"
 ```
 
-Note that the `sshd` service is disabled and you will need to manage the
-instance using the Recovery Console and login using the username set by the
-`system_user` packer variable, `kondig` by default.
+Note that the `sshd` service is disabled and replaced with the honeypot.
+
+You will need to manage the instance using the Recovery Console and login
+using the username set by the `system_user` packer variable,
+`kondig` by default.

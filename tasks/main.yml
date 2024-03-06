@@ -38,9 +38,9 @@
 - name: Install cowrie configuration files
   become: true
   ansible.builtin.template:
-    src: "cowrie/etc/{{ item }}"
+    src: cowrie/etc/{{ item }}
     dest: "{{ docker_user_info.home }}/cowrie/etc/{{ item }}"
-    backup: 'yes'
+    backup: "yes"
     mode: "0644"
   register: cowrie_configuration_files
   with_items:
@@ -49,26 +49,25 @@
 
 - name: Add python logreader
   ansible.builtin.template:
-    src: "files/cowrie_logs.py.j2"
+    src: files/cowrie_logs.py.j2
     dest: "{{ ansible_env.HOME }}/cowrie_logs.py"
     mode: "0700"
 
 - name: Add shell logreader
   ansible.builtin.template:
-    src: "files/cowrie_userpass.sh.j2"
+    src: files/cowrie_userpass.sh.j2
     dest: "{{ ansible_env.HOME }}/cowrie_userpass.sh"
     mode: "0700"
 
 - name: Install jq
   become: true
   ansible.builtin.apt:
-    name: "jq"
+    name: jq
     state: present
-    install_recommends: 'no'
+    install_recommends: "no"
 
 - name: Configure firewall
   ansible.builtin.include_tasks: tasks/firewall.yml
 
 - name: Configure and run cowrie container
   ansible.builtin.include_tasks: tasks/cowrie.yml
-...

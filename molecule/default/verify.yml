@@ -11,7 +11,7 @@
     - name: Wait for the host and reconnect
       ansible.builtin.wait_for:
         port: 22
-        host: '{{ (ansible_ssh_host | default(ansible_host)) | default(inventory_hostname) }}'
+        host: "{{ (ansible_ssh_host | default(ansible_host)) | default(inventory_hostname) }}"
         delay: 10
         timeout: 120
 
@@ -19,7 +19,7 @@
       ansible.builtin.include_vars:
         dir: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/"
         extensions:
-          - 'yml'
+          - yml
 
     - name: Include host vars
       ansible.builtin.include_vars:
@@ -35,7 +35,7 @@
       become: true
       ansible.builtin.user:
         name: "{{ docker_user }}"
-      check_mode: 'yes'
+      check_mode: "yes"
       register: docker_user_info
 
     - name: Rootless verification block
@@ -144,4 +144,3 @@
       register: grep_logs
       changed_when: grep_logs.rc != 0
       failed_when: grep_logs.rc != 0
-...
