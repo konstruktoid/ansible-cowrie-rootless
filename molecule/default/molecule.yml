@@ -22,18 +22,26 @@ provisioner:
         rootful_enabled: true
 platforms:
   - name: rootless
-    box: bento/ubuntu-20.04
+    box: bento/ubuntu-24.04
     config_options:
       vm.boot_timeout: 600
+      ssh.key_type: ed25519
     instance_raw_config_args:
-      - "vbguest.installer_options = { allow_kernel_upgrade: true }"
+      - vbguest.auto_update = false
+    provider_raw_config_args:
+      - customize ['modifyvm', :id, '--uart1', '0x3F8', '4']
+      - customize ['modifyvm', :id, '--uartmode1', 'file', File::NULL]
     memory: 1024
   - name: rootful
-    box: bento/ubuntu-20.04
+    box: bento/ubuntu-24.04
     config_options:
       vm.boot_timeout: 600
+      ssh.key_type: ed25519
     instance_raw_config_args:
-      - "vbguest.installer_options = { allow_kernel_upgrade: true }"
+      - vbguest.auto_update = false
+    provider_raw_config_args:
+      - customize ['modifyvm', :id, '--uart1', '0x3F8', '4']
+      - customize ['modifyvm', :id, '--uartmode1', 'file', File::NULL]
     memory: 1024
 verifier:
   name: ansible

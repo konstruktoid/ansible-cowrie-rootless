@@ -48,17 +48,19 @@ locals {
 }
 
 source "azure-arm" "cowrie" {
-  image_offer                       = "0001-com-ubuntu-server-jammy"
+  image_offer                       = "0001-com-ubuntu-minimal-jammy"
   image_publisher                   = "canonical"
-  image_sku                         = "22_04-lts-gen2"
+  image_sku                         = "minimal-22_04-lts-gen2"
   managed_image_name                = "cowrie-server"
   os_type                           = "Linux"
   vm_size                           = "Standard_D2s_v3"
+  public_ip_sku                     = "Standard"
   ssh_clear_authorized_keys         = "true"
   ssh_keep_alive_interval           = "15s"
   ssh_pty                           = "true"
   ssh_timeout                       = "10m"
   ssh_username                      = "ubuntu"
+  temporary_key_pair_type           = "ed25519"
   client_id                         = var.client_id
   client_secret                     = var.client_secret
   subscription_id                   = var.subscription_id
