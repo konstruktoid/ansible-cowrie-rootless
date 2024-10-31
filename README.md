@@ -84,7 +84,8 @@ $ terraform import "azurerm_resource_group.honeypots" \
   "$(az group show --name "${ARM_RESOURCE_GROUP_NAME}" | jq -r '.id')"
 $ terraform plan
 $ terraform apply
-$ grep -E '"admin_(username|password)":' terraform.tfstate
+$ grep -E '"admin_(username|password)":|"public_ip_address":' terraform.tfstate
+```
 
 Note that the `sshd` service is disabled and replaced with the honeypot.
 
@@ -113,3 +114,8 @@ Note that the `sshd` service is disabled and replaced with the honeypot.
 You will need to manage the instance using the Recovery Console and login
 using the username set by the `system_user` packer variable,
 `kondig` by default.
+
+### Usage
+
+The logs are stored in `{{ docker_user_info.home }}/cowrie/var/log` and can be
+accessed using either `sudo cowrie_logs.py` or `sudo cowrie_userpass.sh`.
