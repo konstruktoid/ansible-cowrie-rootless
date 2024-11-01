@@ -1,27 +1,32 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+# ruff: noqa: T201
 """Read the cowrie logs and return connection info in csv format."""
 
 try:
     import json
 except ImportError:
     import simplejson as json
-import glob
+from pathlib import Path
+
+import pandas as pd
 
 COWRIE_LOG_DIR = "{{ docker_user_info.home }}/cowrie/var/log"
-cowrie_log_files = glob.glob(COWRIE_LOG_DIR + "/cowrie.json*")
+COWRIE_CSV_LOG = Path.cwd() / "cowrie_log.csv"
 
 
-def log_reader(logfile):
+def log_reader(logfile: str) -> list:
     """Read the cowrie json log."""
     try:
-        with open(logfile, "r", encoding="UTF-8") as cowrie_json:
-            cowrie_data = [json.loads(line) for line in cowrie_json]
-            return cowrie_data
+        with Path.open(logfile, encoding="UTF-8") as cowrie_json:
+            return [json.loads(line) for line in cowrie_json]
     except json.decoder.JSONDecodeError:
         return type(json.decoder.JSONDecodeError)
 
 
-print("timestamp,src_ip,eventid,username,password")
+with Path.open(COWRIE_CSV_LOG, "w") as file:
+    file.write("timestamp,src_ip,eventid,username,password\n")
+
+cowrie_log_files = Path(COWRIE_LOG_DIR).glob("cowrie.json*")
 for loglist in cowrie_log_files:
     try:
         for data in log_reader(loglist):
@@ -29,18 +34,25 @@ for loglist in cowrie_log_files:
                 data["eventid"] == "cowrie.login.success"
                 or data["eventid"] == "cowrie.login.failed"
             ):
-                print(
-                    data["timestamp"]
-                    + ","
-                    + data["src_ip"]
-                    + ","
-                    + data["eventid"]
-                    + ","
-                    + data["username"]
-                    + ","
-                    + data["password"]
-                )
+                with Path.open(COWRIE_CSV_LOG, "a") as file:
+                    file.write(
+                        data["timestamp"]
+                        + ","
+                        + data["src_ip"]
+                        + ","
+                        + data["eventid"]
+                        + ","
+                        + data["username"]
+                        + ","
+                        + data["password"]
+                        + "\n",
+                    )
     except BrokenPipeError:
         pass
     except TypeError:
         pass
+
+parse_csv = pd.read_csv(COWRIE_CSV_LOG)
+print(parse_csv["src_ip"].value_counts().head(50))
+print(parse_csv["username"].value_counts().head(50))
+print(parse_csv["password"].value_counts().head(50))
