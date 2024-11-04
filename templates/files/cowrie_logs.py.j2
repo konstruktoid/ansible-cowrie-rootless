@@ -23,7 +23,7 @@ def log_reader(logfile: str) -> list:
         return type(json.decoder.JSONDecodeError)
 
 
-with Path.open(COWRIE_CSV_LOG, "w") as file:
+with Path.open(COWRIE_CSV_LOG, "w", encoding="UTF-8") as file:
     file.write("timestamp,src_ip,eventid,username,password\n")
 
 cowrie_log_files = Path(COWRIE_LOG_DIR).glob("cowrie.json*")
@@ -52,7 +52,13 @@ for loglist in cowrie_log_files:
     except TypeError:
         pass
 
-parse_csv = pd.read_csv(COWRIE_CSV_LOG)
-print(parse_csv["src_ip"].value_counts().head(50))
-print(parse_csv["username"].value_counts().head(50))
-print(parse_csv["password"].value_counts().head(50))
+parse_csv = pd.read_csv(COWRIE_CSV_LOG, on_bad_lines="skip")
+start_date = parse_csv["timestamp"].head(1).to_string()
+end_date = parse_csv["timestamp"].tail(1).to_string()
+top50_ip = parse_csv["src_ip"].value_counts().head(50).to_string()
+top50_username = parse_csv["username"].value_counts().head(50).to_string()
+top50_password = parse_csv["password"].value_counts().head(50).to_string()
+
+print(
+    f"{start_date} - {end_date}\n\n{top50_ip}\n\n{top50_username}\n\n{top50_password}\n",
+)
