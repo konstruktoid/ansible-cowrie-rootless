@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# ruff: noqa: T201
+# ruff: noqa: T201,PERF203
 """Read the cowrie logs and return connection info in csv format."""
 
 try:
@@ -14,51 +14,50 @@ COWRIE_LOG_DIR = "{{ docker_user_info.home }}/cowrie/var/log"
 COWRIE_CSV_LOG = Path.cwd() / "cowrie_log.csv"
 
 
-def log_reader(logfile: str) -> list:
-    """Read the cowrie json log."""
-    try:
-        with Path.open(logfile, encoding="UTF-8") as cowrie_json:
-            return [json.loads(line) for line in cowrie_json]
-    except json.decoder.JSONDecodeError:
-        return type(json.decoder.JSONDecodeError)
-
-
 with Path.open(COWRIE_CSV_LOG, "w", encoding="UTF-8") as file:
-    file.write("timestamp,src_ip,eventid,username,password\n")
+    file.write("timestamp,log,src_ip,eventid,username,password\n")
 
 cowrie_log_files = Path(COWRIE_LOG_DIR).glob("cowrie.json*")
-for loglist in cowrie_log_files:
-    try:
-        for data in log_reader(loglist):
-            if (
-                data["eventid"] == "cowrie.login.success"
-                or data["eventid"] == "cowrie.login.failed"
-            ):
-                with Path.open(COWRIE_CSV_LOG, "a") as file:
-                    file.write(
-                        data["timestamp"]
-                        + ","
-                        + data["src_ip"]
-                        + ","
-                        + data["eventid"]
-                        + ","
-                        + data["username"]
-                        + ","
-                        + data["password"]
-                        + "\n",
-                    )
-    except BrokenPipeError:
-        pass
-    except TypeError:
-        pass
 
-parse_csv = pd.read_csv(COWRIE_CSV_LOG, on_bad_lines="skip")
-start_date = parse_csv["timestamp"].head(1).to_string()
-end_date = parse_csv["timestamp"].tail(1).to_string()
+for cowrie_log in cowrie_log_files:
+    with Path.open(cowrie_log, "r") as file:
+        log_filename = Path(file.name).stem + Path(file.name).suffix
+        for line in file.readlines():
+            try:
+                data = json.loads(line)
+                if (
+                    data["eventid"] == "cowrie.login.success"
+                    or data["eventid"] == "cowrie.login.failed"
+                ):
+                    with Path.open(COWRIE_CSV_LOG, "a") as csv_file:
+                        csv_file.write(
+                            data["timestamp"]
+                            + ","
+                            + log_filename
+                            + ","
+                            + data["src_ip"]
+                            + ","
+                            + data["eventid"]
+                            + ","
+                            + data["username"]
+                            + ","
+                            + data["password"]
+                            + "\n",
+                        )
+            except json.decoder.JSONDecodeError:
+                pass
+
+
+parse_csv = pd.read_csv(COWRIE_CSV_LOG, usecols=range(6))
+
+size = parse_csv["username"].size
+
 top50_ip = parse_csv["src_ip"].value_counts().head(50).to_string()
 top50_username = parse_csv["username"].value_counts().head(50).to_string()
 top50_password = parse_csv["password"].value_counts().head(50).to_string()
 
+logs = parse_csv["log"].value_counts().to_string()
+
 print(
-    f"{start_date} - {end_date}\n\n{top50_ip}\n\n{top50_username}\n\n{top50_password}\n",
+    f"\n{top50_ip}\n\n{top50_username}\n\n{top50_password}\n\n{logs}\n\nsum: {size}\n",
 )
