@@ -9,7 +9,7 @@ collections:
     source: https://github.com/ansible-collections/community.crypto.git
     type: git
   - name: community.docker
-    version: '4.7.0'
+    version: '4.8.1'
     source: https://github.com/ansible-collections/community.docker.git
     type: git
   - name: community.general
